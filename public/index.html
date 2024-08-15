@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-suggestion Example</title>
+    <style>
+        .suggestions {
+            border: 1px solid #ddd;
+            max-height: 150px;
+            overflow-y: auto;
+            position: absolute;
+            background: white;
+            z-index: 1;
+        }
+        .suggestions div {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .suggestions div:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <input list="suggestedNames" type="text" id="searchInput" name="name" placeholder="Start typing..." autocomplete="off">
+    <datalist id="suggestedNames">
+        <option value="names">names</option>
+    </datalist>
+    <button id="submit_bro" onclick="get_id()">submit</button>
+    <h1 id="output">☝️Search for your id number by entering a name</h1>
+
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const suggestionsDiv = document.getElementById('suggestions');
+        searchInput.addEventListener('input', async () => {
+            const query = searchInput.value;
+            if (query.length === 0) {
+                suggestionsDiv.innerHTML = '';
+                return;
+            }
+
+            // Fetch suggestions from the server
+            try {
+                const response = await fetch(`/search?name=${query}`);
+                const suggestions = await response.json();
+                
+                // Log the entire response and the names property for debugging
+                console.log('Response:', suggestions);
+                console.log('Names:', suggestions.names);
+        
+        // Get the select element
+        const selectElement = document.getElementById("suggestedNames");
+        
+        // Clear existing options (if needed)
+        selectElement.innerHTML = '';
+        
+        // Ensure names is an array before using forEach
+        if (Array.isArray(suggestions.names)) {
+            suggestions.names.forEach(name => {
+                // Create a new option element
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                // Append the option to the select element
+                selectElement.appendChild(option);
+            });
+        } else {
+            console.error('Expected names to be an array but got:', suggestions.names);
+        }
+    } catch (error) {
+        console.error('Error fetching or processing data:', error);
+    }
+});
+
+        async function get_id(){
+            console.log("Entered into get_id");
+            const name = searchInput.value;
+            const response = await fetch(`/get_id?name=${name}`);
+            const suggestions = await response.json();
+            console.log(suggestions);
+            const output = document.getElementById("output");
+            output.innerText = suggestions;
+
+        }
+    </script>
+</body>
+</html>
