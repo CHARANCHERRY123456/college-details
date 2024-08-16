@@ -8,7 +8,7 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #F4F4F9;
-            color: white;
+            color: #1E293B;
             margin: 0;
             padding: 20px;
             overflow: hidden;
@@ -71,23 +71,6 @@
             background: linear-gradient(90deg, transparent, cyan, transparent);
             animation: neon 2s infinite linear;
         }
-        @media (min-width: 769px) {
-        .container {
-                flex-direction: row;
-                align-items: flex-start;
-            }
-
-            .photo img {
-                width: 250px;
-                height: 250px;
-            }
-
-            .details {
-                padding-left: 20px;
-                text-align: left;
-            }
-        }
-
 
         @keyframes neon {
             0% {
@@ -103,18 +86,16 @@
 
         .container {
             display: flex;
-            /* align-items: center; */
-            background-color: white;
-            color: black;
+            align-items: center;
+            background-color: #1E3A8A;
             padding: 20px;
             border-radius: 8px;
-            /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             max-width: 900px;
             width: 100%;
             transform: scale(0);
             animation: bloom 1s ease-out forwards;
-            flex-direction:row;
-            align-items: flex-start;
+            flex-direction: row;
             overflow-y: auto;
             max-height: 80vh;
         }
@@ -134,21 +115,15 @@
             flex: 1;
             text-align: center;
             cursor: pointer;
-            margin-right: 20px;
-            margin-top: 20px;
         }
-        
+
         .photo img {
-            display: flex;
             width: 250px;
             height: 250px;
             border-radius: 8px;
             object-fit: cover;
             border: 4px solid #555;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            width: 100%; /* Ensure image scales properly */
-            max-width: 250px; /* Limit the maximum size */
-            height: auto;
         }
 
         .photo img:hover {
@@ -285,7 +260,7 @@
     </div>
 
     <div id="result" class="container">
-        <!-- <div class="photo">
+        <div class="photo">
             <img src="https://via.placeholder.com/250" alt="User Image" id="userImage">
         </div>
         <h2>C V CHARAN</h2>
@@ -300,8 +275,8 @@
         <p><span class="label">Father:</span> <span class="value">C VENKATESH</span></p>
         <p><span class="label">District:</span> <span class="value">CHITTOOR</span></p>
         <p><span class="label">School:</span> <span class="value">DR VARADAPPA NAIDU MCHS</span></p>
-        <p><span class="label">Phone:</span> <span class="value">0</span></p> -->
-    </div>
+        <p><span class="label">Phone:</span> <span class="value">0</span></p>
+        </div>
     </div>
 
     <!-- Modal for Full Image -->
@@ -355,15 +330,18 @@
                     <h2>${data.name[0]}</h2>
                     <p><span class="label"><strong>ID:</strong> ${data.ID[0]}</span></p>
                     <p><span class="label"><strong>Gender:</strong> ${data.GENDER[0]}</span></p>
-                    <p><span class="label"><strong>Phone:</strong> ${data.PHONE[0]}</span></p>
+                    <p><span class="label"><strong>CET HT NO.:</strong> ${data['CET HT NO.'][0]}</span></p>
+                    <p><span class="label"><strong>Stream:</strong> ${data.STREAM[0]}</span></p>
+                    <p><span class="label"><strong>Class(p1):</strong> ${data['Class(p1)'][0]}</span></p>
                     <p><span class="label"><strong>Caste:</strong> ${data.CASTE[0]}</span></p>
+                    <p><span class="label"><strong>Class(p2):</strong> ${data['Class(p2)'][0]}</span></p>
                     <p><span class="label"><strong>Date of Birth:</strong> ${data.DOB[0]}</span></p>
-                    <p><span class="label"><strong>District:</strong> ${data.DISTRICT[0]}</span></p>
                     <p><span class="label"><strong>Branch:</strong> ${data.BRANCH[0]}</span></p>
                     <p><span class="label"><strong>Father:</strong> ${data.FATHER[0]}</span></p>
                     <p><span class="label"><strong>Mandal:</strong> ${data.MANDAL[0]}</span></p>
-                    <p><span class="label"><strong>CET HT NO.:</strong> ${data['CET HT NO.'][0]}</span></p>
+                    <p><span class="label"><strong>District:</strong> ${data.DISTRICT[0]}</span></p>
                     <p><span class="label"><strong>School:</strong> ${data.SCHOOL[0]}</span></p>
+                    <p><span class="label"><strong>Phone:</strong> ${data.PHONE[0]}</span></p>
                 </div>
             `;
         }

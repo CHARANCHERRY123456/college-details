@@ -8,7 +8,7 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #F4F4F9;
-            color: white;
+            color: #1E293B;
             margin: 0;
             padding: 20px;
             overflow: hidden;
@@ -71,23 +71,6 @@
             background: linear-gradient(90deg, transparent, cyan, transparent);
             animation: neon 2s infinite linear;
         }
-        @media (min-width: 769px) {
-        .container {
-                flex-direction: row;
-                align-items: flex-start;
-            }
-
-            .photo img {
-                width: 250px;
-                height: 250px;
-            }
-
-            .details {
-                padding-left: 20px;
-                text-align: left;
-            }
-        }
-
 
         @keyframes neon {
             0% {
@@ -103,18 +86,16 @@
 
         .container {
             display: flex;
-            /* align-items: center; */
-            background-color: white;
-            color: black;
+            align-items: center;
+            background-color: #1E3A8A;
             padding: 20px;
             border-radius: 8px;
-            /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             max-width: 900px;
             width: 100%;
             transform: scale(0);
             animation: bloom 1s ease-out forwards;
-            flex-direction:row;
-            align-items: flex-start;
+            flex-direction: row;
             overflow-y: auto;
             max-height: 80vh;
         }
@@ -134,21 +115,15 @@
             flex: 1;
             text-align: center;
             cursor: pointer;
-            margin-right: 20px;
-            margin-top: 20px;
         }
-        
+
         .photo img {
-            display: flex;
             width: 250px;
             height: 250px;
             border-radius: 8px;
             object-fit: cover;
             border: 4px solid #555;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            width: 100%; /* Ensure image scales properly */
-            max-width: 250px; /* Limit the maximum size */
-            height: auto;
         }
 
         .photo img:hover {
@@ -164,7 +139,7 @@
         .details h2 {
             margin: 0 0 10px 0;
             font-size: 28px;
-            color: aliceblue;
+            color: #1e90ff;
             text-shadow: 0 0 5px #000;
         }
 
@@ -177,7 +152,7 @@
 
         .details p span.label {
             font-weight: bold;
-            color: azure;
+            color: #1e90ff;
             padding-right: 10px;
             display: inline-block;
             width: 180px;
@@ -185,7 +160,7 @@
         }
 
         .details p span.value {
-            color: azure;
+            color: #ddd;
             display: inline-block;
             white-space: pre-wrap;
         }
@@ -277,95 +252,123 @@
 
     <!-- Search Box -->
     <div class="search-box">
-        <input list="suggestedNames" type="text" id="searchInput" name="name" placeholder="Search..." autocomplete="off">
-        <datalist id="suggestedNames">
-            <option value="names">names</option>
-        </datalist>
-        <button id="submit_bro" onclick="get_id()">submit</button>
+        <input type="text" id="searchInput" placeholder="Search...">
+        <button onclick="get_id()">Search</button>
     </div>
 
-    <div id="result" class="container">
-        <!-- <div class="photo">
+    <div class="container">
+        <div class="photo">
             <img src="https://via.placeholder.com/250" alt="User Image" id="userImage">
         </div>
-        <h2>C V CHARAN</h2>
-        <p><span class="label">ID:</span> <span class="value">R200589</span></p>
-        <p><span class="label">Gender:</span> <span class="value">MALE</span></p>
-        <p><span class="label">Stream:</span> <span class="value">M.P.C</span></p>
-        <p><span class="label">Caste:</span> <span class="value">SC</span></p>
-        <p><span class="label">Date of Birth:</span> <span class="value">05/08/2004</span></p>
-        <p><span class="label">Branch:</span> 
-            <span class="value">Computer Science and Engineering</span>
-        </p>
-        <p><span class="label">Father:</span> <span class="value">C VENKATESH</span></p>
-        <p><span class="label">District:</span> <span class="value">CHITTOOR</span></p>
-        <p><span class="label">School:</span> <span class="value">DR VARADAPPA NAIDU MCHS</span></p>
-        <p><span class="label">Phone:</span> <span class="value">0</span></p> -->
-    </div>
+        <div class="details" id="result">
+            <h2>C V CHARAN</h2>
+            <p><span class="label">ID:</span> <span class="value">R200589</span></p>
+            <p><span class="label">Gender:</span> <span class="value">MALE</span></p>
+            <p><span class="label">CET HT NO.:</span> <span class="value">2010005101</span></p>
+            <p><span class="label">Stream:</span> <span class="value">M.P.C</span></p>
+            <p><span class="label">Class (p1):</span> <span class="value">F007</span></p>
+            <p><span class="label">Caste:</span> <span class="value">SC</span></p>
+            <p><span class="label">Class (p2):</span> <span class="value">Class-12 (S017-AB1)</span></p>
+            <p><span class="label">Date of Birth:</span> <span class="value">05/08/2004</span></p>
+            <p><span class="label">Branch:</span> 
+                <span class="value">Computer Science<br>and Engineering</span>
+            </p>
+            <p><span class="label">Father:</span> <span class="value">C VENKATESH</span></p>
+            <p><span class="label">Mandal:</span> <span class="value">CHITTOOR</span></p>
+            <p><span class="label">District:</span> <span class="value">CHITTOOR</span></p>
+            <p><span class="label">School:</span> <span class="value">DR VARADAPPA NAIDU MCHS</span></p>
+            <p><span class="label">Phone:</span> <span class="value">0</span></p>
+        </div>
     </div>
 
-    <!-- Modal for Full Image -->
-    <div id="imageModal" class="modal">
+    <!-- Modal for Enlarged Image -->
+    <div class="modal" id="imageModal">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">×</button>
-            <img src="https://via.placeholder.com/500" alt="User Image">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <img id="modalImage" src="" alt="Enlarged Image">
         </div>
     </div>
 
     <script>
-       const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('input', async () => {
-            const query = searchInput.value;
-            try {
-                const response = await fetch(`/search?name=${query}`);
-                const suggestions = await response.json();
-                
-                console.log('Response:', suggestions);
-                console.log('Names:', suggestions.names);
+        const input = document.getElementById("searchInput");
 
-                const selectElement = document.getElementById("suggestedNames");
-                selectElement.innerHTML = '';
-
-                if (Array.isArray(suggestions.names)) {
-                    suggestions.names.forEach(name => {
-                        const option = document.createElement('option');
-                        option.value = name;
-                        option.textContent = name;
-                        selectElement.appendChild(option);
-                    });
-                } else {
-                    console.error('Expected names to be an array but got:', suggestions.names);
+        // Function to handle up and down arrow key navigation
+        input.addEventListener("keydown", function (e) {
+            const list = ["C V CHARAN", "S V SAI", "R K RAVI"]; // Example suggestions
+            const key = e.key;
+            if (key === "ArrowDown" || key === "ArrowUp") {
+                e.preventDefault();
+                let index = list.indexOf(input.value);
+                if (key === "ArrowDown") {
+                    index = (index + 1) % list.length;
+                } else if (key === "ArrowUp") {
+                    index = (index - 1 + list.length) % list.length;
                 }
-            } catch (error) {
-                console.error('Error fetching or processing data:', error);
+                input.value = list[index];
             }
         });
 
-        async function get_id(){
-            console.log("Entered into get_id");
-            const name = searchInput.value;
-            const response = await fetch(`/get_id?name=${name}`);
-            const data = await response.json();
+        function get_id() {
+            const id = document.getElementById("searchInput").value;
+            const resultDiv = document.getElementById("result");
 
-            document.getElementById('result').innerHTML = `
-            <div class="info">
-                <div class="photo">
-                    <img src="${data.Image[0]}" alt="User Image" id="userImage" class="img-fluid">
-                </div>
-                    <h2>${data.name[0]}</h2>
-                    <p><span class="label"><strong>ID:</strong> ${data.ID[0]}</span></p>
-                    <p><span class="label"><strong>Gender:</strong> ${data.GENDER[0]}</span></p>
-                    <p><span class="label"><strong>Phone:</strong> ${data.PHONE[0]}</span></p>
-                    <p><span class="label"><strong>Caste:</strong> ${data.CASTE[0]}</span></p>
-                    <p><span class="label"><strong>Date of Birth:</strong> ${data.DOB[0]}</span></p>
-                    <p><span class="label"><strong>District:</strong> ${data.DISTRICT[0]}</span></p>
-                    <p><span class="label"><strong>Branch:</strong> ${data.BRANCH[0]}</span></p>
-                    <p><span class="label"><strong>Father:</strong> ${data.FATHER[0]}</span></p>
-                    <p><span class="label"><strong>Mandal:</strong> ${data.MANDAL[0]}</span></p>
-                    <p><span class="label"><strong>CET HT NO.:</strong> ${data['CET HT NO.'][0]}</span></p>
-                    <p><span class="label"><strong>School:</strong> ${data.SCHOOL[0]}</span></p>
-                </div>
-            `;
+            // Simulate fetching data based on ID
+            const data = {
+                "C V CHARAN": {
+                    id: "R200589",
+                    gender: "MALE",
+                    cet: "2010005101",
+                    stream: "M.P.C",
+                    class1: "F007",
+                    caste: "SC",
+                    class2: "Class-12 (S017-AB1)",
+                    dob: "05/08/2004",
+                    branch: "Computer Science and Engineering",
+                    father: "C VENKATESH",
+                    mandal: "CHITTOOR",
+                    district: "CHITTOOR",
+                    school: "DR VARADAPPA NAIDU MCHS",
+                    phone: "0"
+                },
+                "S V SAI": { /* details for S V SAI */ },
+                "R K RAVI": { /* details for R K RAVI */ }
+            };
+
+            if (data[id]) {
+                const user = data[id];
+                resultDiv.innerHTML = `
+                    <h2>${id}</h2>
+                    <p><span class="label">ID:</span> <span class="value">${user.id}</span></p>
+                    <p><span class="label">Gender:</span> <span class="value">${user.gender}</span></p>
+                    <p><span class="label">CET HT NO.:</span> <span class="value">${user.cet}</span></p>
+                    <p><span class="label">Stream:</span> <span class="value">${user.stream}</span></p>
+                    <p><span class="label">Class (p1):</span> <span class="value">${user.class1}</span></p>
+                    <p><span class="label">Caste:</span> <span class="value">${user.caste}</span></p>
+                    <p><span class="label">Class (p2):</span> <span class="value">${user.class2}</span></p>
+                    <p><span class="label">Date of Birth:</span> <span class="value">${user.dob}</span></p>
+                    <p><span class="label">Branch:</span> <span class="value">${user.branch}</span></p>
+                    <p><span class="label">Father:</span> <span class="value">${user.father}</span></p>
+                    <p><span class="label">Mandal:</span> <span class="value">${user.mandal}</span></p>
+                    <p><span class="label">District:</span> <span class="value">${user.district}</span></p>
+                    <p><span class="label">School:</span> <span class="value">${user.school}</span></p>
+                    <p><span class="label">Phone:</span> <span class="value">${user.phone}</span></p>
+                `;
+            } else {
+                resultDiv.innerHTML = `<p>No data found for ${id}</p>`;
+            }
+        }
+
+        // Image click event for modal
+        document.getElementById("userImage").addEventListener("click", function () {
+            const modal = document.getElementById("imageModal");
+            const modalImg = document.getElementById("modalImage");
+            modal.style.display = "flex";
+            modalImg.src = this.src;
+        });
+
+        // Close modal function
+        function closeModal() {
+            document.getElementById("imageModal").style.display = "none";
         }
     </script>
 </body>
