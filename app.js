@@ -38,8 +38,10 @@ app.get('/search', (req, res) => {
 app.get("/get_id" , (req , res)=>{
     console.log("Emtered");
     const name = req.query.name;
-    const sid_row = df.values.filter((row)=> row[1]==name);
-    res.json(sid_row[0][0])
+    const sid_row = df.query(df['name'].eq(name));
+    var json_df = dfd.toJSON(sid_row, { format: 'row' });
+    console.log(json_df);
+    res.json(json_df)
 })
 
 app.listen(3000, () => {

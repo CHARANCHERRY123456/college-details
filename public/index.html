@@ -20,16 +20,49 @@
         .suggestions div:hover {
             background-color: #f0f0f0;
         }
+        .container {
+            margin: 20px;
+            max-width: 800px;
+        }
+        .card {
+            display: flex;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+        .card img {
+            width: 320px;
+            height: auto;
+            border-radius: 10px;
+            margin-right: 20px;
+            object-fit: cover;
+        }
+        .card .info {
+            flex: 1;
+        }
+        .card h4 {
+            margin-bottom: 10px;
+        }
+        .card p {
+            margin-bottom: 5px;
+        }
     </style>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <input list="suggestedNames" type="text" id="searchInput" name="name" placeholder="Start typing..." autocomplete="off">
-    <datalist id="suggestedNames">
-        <option value="names">names</option>
-    </datalist>
-    <button id="submit_bro" onclick="get_id()">submit</button>
-    <h1 id="output">☝️Search for your id number by entering a name</h1>
-
+    <div class="container">
+        <input list="suggestedNames" type="text" id="searchInput" name="name" placeholder="Start typing..." class="form-control" autocomplete="off">
+        <datalist id="suggestedNames">
+            <option value="names">names</option>
+        </datalist>
+        <button id="submit_bro" onclick="get_id()">submit</button>
+        <p id="output" class="text-center">☝️Search for your id number by entering a name</p>
+        <div id="result" class="card">
+            <!-- Data will be displayed here -->
+        </div>
+    </div>
 
     <script>
         const searchInput = document.getElementById('searchInput');
@@ -41,48 +74,57 @@
                 return;
             }
 
-            // Fetch suggestions from the server
             try {
                 const response = await fetch(`/search?name=${query}`);
                 const suggestions = await response.json();
                 
-                // Log the entire response and the names property for debugging
                 console.log('Response:', suggestions);
                 console.log('Names:', suggestions.names);
-        
-        // Get the select element
-        const selectElement = document.getElementById("suggestedNames");
-        
-        // Clear existing options (if needed)
-        selectElement.innerHTML = '';
-        
-        // Ensure names is an array before using forEach
-        if (Array.isArray(suggestions.names)) {
-            suggestions.names.forEach(name => {
-                // Create a new option element
-                const option = document.createElement('option');
-                option.value = name;
-                option.textContent = name;
-                // Append the option to the select element
-                selectElement.appendChild(option);
-            });
-        } else {
-            console.error('Expected names to be an array but got:', suggestions.names);
-        }
-    } catch (error) {
-        console.error('Error fetching or processing data:', error);
-    }
-});
+
+                const selectElement = document.getElementById("suggestedNames");
+                selectElement.innerHTML = '';
+
+                if (Array.isArray(suggestions.names)) {
+                    suggestions.names.forEach(name => {
+                        const option = document.createElement('option');
+                        option.value = name;
+                        option.textContent = name;
+                        selectElement.appendChild(option);
+                    });
+                } else {
+                    console.error('Expected names to be an array but got:', suggestions.names);
+                }
+            } catch (error) {
+                console.error('Error fetching or processing data:', error);
+            }
+        });
 
         async function get_id(){
             console.log("Entered into get_id");
             const name = searchInput.value;
             const response = await fetch(`/get_id?name=${name}`);
-            const suggestions = await response.json();
-            console.log(suggestions);
-            const output = document.getElementById("output");
-            output.innerText = suggestions;
+            const data = await response.json();
 
+            document.getElementById('result').innerHTML = `
+                <img src="${data.Image[0]}" alt="User Image" class="img-fluid">
+                <div class="info">
+                    <h4>${data.name[0]}</h4>
+                    <p><strong>ID:</strong> ${data.ID[0]}</p>
+                    <p><strong>Gender:</strong> ${data.GENDER[0]}</p>
+                    <p><strong>CET HT NO.:</strong> ${data['CET HT NO.'][0]}</p>
+                    <p><strong>Stream:</strong> ${data.STREAM[0]}</p>
+                    <p><strong>Class(p1):</strong> ${data['Class(p1)'][0]}</p>
+                    <p><strong>Caste:</strong> ${data.CASTE[0]}</p>
+                    <p><strong>Class(p2):</strong> ${data['Class(p2)'][0]}</p>
+                    <p><strong>Date of Birth:</strong> ${data.DOB[0]}</p>
+                    <p><strong>Branch:</strong> ${data.BRANCH[0]}</p>
+                    <p><strong>Father:</strong> ${data.FATHER[0]}</p>
+                    <p><strong>Mandal:</strong> ${data.MANDAL[0]}</p>
+                    <p><strong>District:</strong> ${data.DISTRICT[0]}</p>
+                    <p><strong>School:</strong> ${data.SCHOOL[0]}</p>
+                    <p><strong>Phone:</strong> ${data.PHONE[0]}</p>
+                </div>
+            `;
         }
     </script>
 </body>
