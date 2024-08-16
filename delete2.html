@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jQuery AJAX Example</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>hi</h1>
+    <button id="fetchButton">Fetch Data</button>
+    <div id="result"></div>
+
+    <script>
+        $('#fetchButton').click(function() {
+            $.get('/your-endpoint', function(data) {
+                $('#result').text(JSON.stringify(data));
+            }).fail(function(error) {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
