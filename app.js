@@ -4,7 +4,7 @@ import bodyParser  from "body-parser";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 const app = express();
-const port = 3001;
+const port = 3000;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Load the CSV file into a DataFrame
@@ -16,9 +16,9 @@ let df = {};
 
 async function oorke(req , res){
     df = await dfd.readCSV("the_data.csv");
-    // df['name'].print();
-    df['name'] = df['name'].values.map(String);// Convert the 'name' column to an array of strings
-    // console.log(df['name']);
+    df['NAME'].print();
+    df['NAME'] = df['NAME'].values.map(String);// Convert the 'NAME' column to an array of strings
+    // console.log(df['NAME']);
 }
 oorke();
 
@@ -29,7 +29,7 @@ app.get("/" , (req , res)=>{
 
 app.get('/search', (req, res) => {
     const query = req.query.name.toUpperCase();
-    const filteredNames = df.values.filter(row => row[1].includes(query)).map(row => row[1]);
+    const filteredNames = df.values.filter(row => row[2].includes(query)).map(row => row[2]);
     const suggestions = {
         "names" : filteredNames
     }
@@ -37,8 +37,8 @@ app.get('/search', (req, res) => {
 });
 app.get("/get_id" , (req , res)=>{
     console.log("Emtered");
-    const name = req.query.name;
-    const sid_row = df.query(df['name'].eq(name));
+    const NAME = req.query.name;
+    const sid_row = df.query(df['NAME'].eq(NAME));
     var json_df = dfd.toJSON(sid_row, { format: 'row' });
     console.log(json_df);
     res.json(json_df)
