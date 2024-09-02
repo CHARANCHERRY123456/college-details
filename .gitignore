@@ -1,6 +1,7 @@
 # my personal deletes
 
 # Logs
+FrontEnd
 logs
 *.log
 npm-debug.log*

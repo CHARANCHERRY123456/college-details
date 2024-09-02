@@ -1,34 +1,55 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copy Number to Clipboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .copy-text {
+            font-size: 16px;
+            color: #007bff;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .copy-text:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<div class="container">
+    <span id="numberText" class="copy-text" onclick="copyToClipboard()">12345</span>
+</div>
 
-    <title>Hello, world!</title>
-  </head>
-  <body>
-    <div class="row">
-        <div class="d-flex align-items-center flex-column bg-danger col-lg-6 col-sm-12 first  w-auto h-auto">
-            <img src="dld_mam.jpg" style="width: 150px;height: 100px;" alt="">
-            <h1>name  : charan</h1>
-            <h1> aljksdfhasdoifh</h1>
-            <h1>askjdfasdfhas</h1>
-        </div>
-        <div class="d-flex align-items-center flex-column bg-success col-lg-6 col-sm-12 second  w-auto h-auto">
-            <h1>name  : charan</h1>
-            <h1> aljksdfhasdoifh</h1>
-            <h1 pt-3 pb-3 px-3>askjdfasdfhas</h1>
-        </div>
-    </div>
+<script>
+    function copyToClipboard() {
+        // Get the number from the span element
+        const number = document.getElementById('numberText').innerText;
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  </body>
+        // Use the Clipboard API to copy the number to the clipboard
+        navigator.clipboard.writeText(number).then(() => {
+            alert("Number copied to clipboard: " + number);
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+        });
+    }
+</script>
+
+</body>
 </html>

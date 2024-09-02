@@ -15,10 +15,9 @@ app.use(express.static("public"));
 let df = {};
 
 async function oorke(req , res){
-    df = await dfd.readCSV("the_data.csv");
-    df['NAME'].print();
+    df = await dfd.readCSV("the_data_with_rank.csv");
+    // df['NAME'].print();
     df['NAME'] = df['NAME'].values.map(String);// Convert the 'NAME' column to an array of strings
-    // console.log(df['NAME']);
 }
 oorke();
 
@@ -36,15 +35,11 @@ app.get('/search', (req, res) => {
     res.json(suggestions);
 });
 app.get("/get_id" , (req , res)=>{
-    console.log("Emtered");
     const NAME = req.query.name;
     const sid_row = df.query(df['NAME'].eq(NAME));
     var json_df = dfd.toJSON(sid_row, { format: 'row' });
-    console.log(json_df);
-    res.json(json_df)
+    res.json(json_df);
 });
-
-
 
 app.listen(port, () => {
     console.log('Server is running on port ' , port);
