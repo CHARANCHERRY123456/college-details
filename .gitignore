@@ -2,6 +2,10 @@
 
 # Logs
 FrontEnd
+data_science/
+sec_the_data.csv
+send_mails.js
+the_data.csv
 logs
 *.log
 npm-debug.log*
