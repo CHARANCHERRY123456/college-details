@@ -16,7 +16,7 @@ dotenv.config();
 const app = express();
 const port = 3000;
 const __filename = fileURLToPath(import.meta.url);
-mongoose.connect(process.env.ATLAS_URI)
+mongoose.connect(process.env.COMPASS_URI)
   .then(() => {
     console.log('Connected to MongoDB successfully!');
   })
@@ -64,7 +64,6 @@ oorke();
 app.get('/', async (req, res) => {
     console.log("okay i am in root");
     if (req.cookies.rkvbros) {
-        console.log('entered here =', req.cookies.rkvbros);
         jwt.verify(req.cookies.rkvbros, token_bro, (err, decoded) => {
             if (err) {
                 console.log("JWT Verification Error:", err.message);
@@ -75,8 +74,11 @@ app.get('/', async (req, res) => {
         const user = await Signup.findOne({
             token : req.cookies.rkvbros
         });
-        req.session.email = user.email;
-        console.log("session email set to " , req.session.email);
+        if(!user){
+            res.clearCookie('rkvbros');
+            req.render("login")
+        }
+        else {req.session.email = user.email;}
     } else {
         res.render("login");
     }
@@ -193,7 +195,7 @@ app.get('/signup' , (req , res)=>{
 
 app.get('/search', (req, res) => {
     const query = req.query.name.toUpperCase();
-    const filteredNames = df.values.filter(row => row[2].includes(query)).map(row => row[2]);
+    const filteredNames = df.values.filter(row => row[1].includes(query)).map(row => row[1]);
     const suggestions = {
         "names" : filteredNames
     }
@@ -204,6 +206,7 @@ app.get("/get_id" ,async (req , res)=>{
     const sid_row = df.query(df['NAME'].eq(NAME));
     if(!sid_row) return res.json({success : false});
     const id = sid_row? sid_row['ID'].values[0]: undefined;
+    console.log(sid_row['EMAIL']);
     if(id == undefined) return json({success:false});
     const session_email = req.session.email;
     const actual_digits = id.replace(/\D/g, '');
