@@ -11,12 +11,13 @@ import cookieParser from 'cookie-parser';
 import bycryptjs from 'bcryptjs'
 import dotenv from 'dotenv';
 import public_list from './public_list.js';
+import home from './home.js';
 dotenv.config();
 
 const app = express();
 const port = 3000;
 const __filename = fileURLToPath(import.meta.url);
-mongoose.connect(process.env.COMPASS_URI)
+mongoose.connect(process.env.ATLAS_URI)
   .then(() => {
     console.log('Connected to MongoDB successfully!');
   })
@@ -32,6 +33,7 @@ const SignupSchema = new mongoose.Schema({
 const Signup = new mongoose.model("Signup" , SignupSchema);
 const __dirname = path.dirname(__filename);
 const token_bro = "this_is_a_secret"; 
+app.use("/home" , home)
 app.use(bodyParser.urlencoded({extended:true}));
 app.set('view engine' , 'ejs' );
 app.use(cookieParser());
@@ -62,7 +64,6 @@ oorke();
 
 
 app.get('/', async (req, res) => {
-    console.log("okay i am in root");
     if (req.cookies.rkvbros) {
         jwt.verify(req.cookies.rkvbros, token_bro, (err, decoded) => {
             if (err) {
@@ -206,7 +207,6 @@ app.get("/get_id" ,async (req , res)=>{
     const sid_row = df.query(df['NAME'].eq(NAME));
     if(!sid_row) return res.json({success : false});
     const id = sid_row? sid_row['ID'].values[0]: undefined;
-    console.log(sid_row['EMAIL']);
     if(id == undefined) return json({success:false});
     const session_email = req.session.email;
     const actual_digits = id.replace(/\D/g, '');
