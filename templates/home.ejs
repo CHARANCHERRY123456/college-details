@@ -291,7 +291,6 @@
     </div>
     
     <div id="result" class="container"></div>
-
     <div id="footer">
 
     </div>
@@ -329,10 +328,10 @@
             console.log(data);
             document.getElementById("pre_text").style.display = "none"
             if(data.success == false) {
-                document.getElementById('result').innerHTML = `Your can't see others data as you have private and if you wan to know send a friedn request to them`
+                document.getElementById('result').innerHTML = `You Can't see others profieles for the security issues
+                in future if everyone accepted you can able to see others profiles and add  friends `
             }
             else{
-                console.log("data is entered ");
             document.getElementById('result').innerHTML = `
                 <div class="photo">
                     <img src="${data.IMAGE[0]}" alt="User Image" id="userImage" class="img-fluid image">

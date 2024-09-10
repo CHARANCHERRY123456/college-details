@@ -16,7 +16,7 @@ dotenv.config();
 const app = express();
 const port = 3000;
 const __filename = fileURLToPath(import.meta.url);
-mongoose.connect(process.env.COMPASS_URI)
+mongoose.connect(process.env.ATLAS_URI)
   .then(() => {
     console.log('Connected to MongoDB successfully!');
   })
@@ -62,7 +62,9 @@ oorke();
 
 
 app.get('/', async (req, res) => {
+    console.log("okay i am in root");
     if (req.cookies.rkvbros) {
+        console.log('entered here =', req.cookies.rkvbros);
         jwt.verify(req.cookies.rkvbros, token_bro, (err, decoded) => {
             if (err) {
                 console.log("JWT Verification Error:", err.message);
@@ -201,7 +203,7 @@ app.get("/get_id" ,async (req , res)=>{
     const NAME = req.query.name;
     const sid_row = df.query(df['NAME'].eq(NAME));
     if(!sid_row) return res.json({success : false});
-    const id = sid_row? sid_row['ID'].values[0]: undefined
+    const id = sid_row? sid_row['ID'].values[0]: undefined;
     if(id == undefined) return json({success:false});
     const session_email = req.session.email;
     const actual_digits = id.replace(/\D/g, '');
