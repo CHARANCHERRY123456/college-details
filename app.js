@@ -31,6 +31,11 @@ const SignupSchema = new mongoose.Schema({
     token : String
 });
 const Signup = new mongoose.model("Signup" , SignupSchema);
+const SearchDataSchema = new mongoose.Schema({
+    person : String,
+    searched_for : [String]
+})
+const SearchData = new mongoose.model("SearchData" , SearchDataSchema );
 const __dirname = path.dirname(__filename);
 const token_bro = "this_is_a_secret"; 
 app.use("/home" , home)
@@ -137,7 +142,6 @@ app.post("/login" , async(req , res)=>{
     }
 });
 
-
 var singup_email = undefined;
 app.post('/send-otp', (req, res) => {
     const { email } = req.body;
@@ -148,11 +152,12 @@ app.post('/send-otp', (req, res) => {
     req.session.email = email;
 
     // Send OTP email
+    console.log("an email is sent to the " , email , "opt is " , otp);
     const mailOptions = {
         from: process.env.EMAIL,
         to: email,
         subject: 'Your OTP for Signup',
-        text: `Your OTP is: ${otp}`
+        text: `This is a messaage from the RKVBros . Your OTP is: ${otp}`
     };
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
@@ -198,6 +203,16 @@ app.get('/search', (req, res) => {
 });
 app.get("/get_id" ,async (req , res)=>{
     const NAME = req.query.name;
+    try{
+        await SearchData.findOneAndUpdate(
+            {person : req.session.email},
+            {$push : {searched_for : NAME}},
+            {new : true , upsert : true}
+        )
+
+    }catch{
+        console.log("error in updating the name");
+    }
     const sid_row = df.query(df['NAME'].eq(NAME));
     if(!sid_row) return res.json({success : false});
     const id = sid_row? sid_row['ID'].values[0]: undefined;
