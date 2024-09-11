@@ -70,16 +70,10 @@ app.get('/', async (req, res) => {
                 console.log("JWT Verification Error:", err.message);
                 return res.status(401).send("Invalid token");
             }
+            console.log(decoded.email);
+            req.session.email = decoded.email;
             res.render("home");
         });
-        const user = await Signup.findOne({
-            token : req.cookies.rkvbros
-        });
-        if(!user){
-            res.clearCookie('rkvbros');
-            req.render("login")
-        }
-        else {req.session.email = user.email;}
     } else {
         res.render("login");
     }
