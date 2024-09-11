@@ -14,6 +14,13 @@ import public_list from './public_list.js';
 import home from './home.js';
 dotenv.config();
 
+
+
+const friends = [
+    "rr200589@rguktrkv.ac.in",
+    "rr200256@rguktrkv.ac.in",
+    "rr200291@rguktrkv.ac.in"
+]
 const app = express();
 const port = 3000;
 const __filename = fileURLToPath(import.meta.url);
