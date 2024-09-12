@@ -16,15 +16,10 @@ dotenv.config();
 
 
 
-const friends = [
-    "rr200589@rguktrkv.ac.in",
-    "rr200256@rguktrkv.ac.in",
-    "rr200291@rguktrkv.ac.in"
-]
 const app = express();
 const port = 3000;
 const __filename = fileURLToPath(import.meta.url);
-mongoose.connect(process.env.ATLAS_URI)
+mongoose.connect(process.env.COMPASS_URI)
   .then(() => {
     console.log('Connected to MongoDB successfully!');
   })
@@ -84,7 +79,9 @@ app.get('/', async (req, res) => {
             }
             console.log(decoded.email);
             req.session.email = decoded.email;
-            res.render("home");
+            res.render("home" , {
+                isYou : decoded.email
+            });
         });
     } else {
         res.render("login");
@@ -101,15 +98,23 @@ app.post("/take_details" ,async (req , res)=>{
     if(Boolean(account_type)) public_list.push(singup_id);
     const hashedPassword = await bycryptjs.hash(password, 10);
     try {
-        const user = await Signup.findOne({ email : singup_email });
-        if (user) return res.send("User Already Exists");
-        const data = {
-            email : singup_email,
-            password : hashedPassword,
-            account_type : Boolean(account_type)
-        };
-        const new_data = await Signup.insertMany(data);
-        res.render("login");
+        const updatedUser = await Signup.findOneAndUpdate(
+            { email: singup_email }, // Search by email
+            { 
+                $set: { 
+                    password: hashedPassword,
+                    account_type: Boolean(account_type)
+                }
+            },
+            { 
+                new: true,     // Return the updated document
+                upsert: true   // Create a new document if it doesn't exist
+            }
+        );
+    
+        console.log("User added/updated:", updatedUser);
+        res.render("login"); // Redirect or render login view
+    
     } catch (err) {
         console.log(err);
         res.status(500).send("Something went wrong during signup");
@@ -166,6 +171,7 @@ app.post('/send-otp', (req, res) => {
         subject: 'Your OTP for Signup',
         text: `This is a messaage from the RKVBros . Your OTP is: ${otp}`
     };
+    return res.json({ success: true, message: 'OTP sent successfully!' });
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             console.log(error);
