@@ -13,13 +13,10 @@ import dotenv from 'dotenv';
 import public_list from './public_list.js';
 import home from './home.js';
 dotenv.config();
-
-
-
 const app = express();
 const port = 3000;
 const __filename = fileURLToPath(import.meta.url);
-mongoose.connect(process.env.COMPASS_URI)
+mongoose.connect(process.env.ATLAS_URI)
   .then(() => {
     console.log('Connected to MongoDB successfully!');
   })
@@ -36,8 +33,15 @@ const Signup = new mongoose.model("Signup" , SignupSchema);
 const SearchDataSchema = new mongoose.Schema({
     person : String,
     searched_for : [String]
-})
+});
 const SearchData = new mongoose.model("SearchData" , SearchDataSchema );
+
+const FriendsSchame = new mongoose.Schema({
+    email : {
+       type:  String,
+    }
+})
+const Friend = new mongoose.model("Friend" , FriendsSchame);
 const __dirname = path.dirname(__filename);
 const token_bro = "this_is_a_secret"; 
 app.use("/home" , home)
@@ -79,9 +83,7 @@ app.get('/', async (req, res) => {
             }
             console.log(decoded.email);
             req.session.email = decoded.email;
-            res.render("home" , {
-                isYou : decoded.email
-            });
+            res.redirect('/home')
         });
     } else {
         res.render("login");
@@ -93,33 +95,79 @@ app.get('/take_details', (req, res) => {
 });
 
 app.post("/take_details" ,async (req , res)=>{
-    const {password , account_type} = req.body; 
-    const singup_id = singup_email.replace(/\D/g, '');
-    if(Boolean(account_type)) public_list.push(singup_id);
+    const {password , cpassword,account_type} = req.body; 
+    if(password != cpassword) return res.render("signup");
+    // const singup_id = singup_email.replace(/\D/g, '');
     const hashedPassword = await bycryptjs.hash(password, 10);
     try {
-        const updatedUser = await Signup.findOneAndUpdate(
-            { email: singup_email }, // Search by email
-            { 
-                $set: { 
-                    password: hashedPassword,
-                    account_type: Boolean(account_type)
-                }
-            },
-            { 
-                new: true,     // Return the updated document
-                upsert: true   // Create a new document if it doesn't exist
-            }
-        );
-    
-        console.log("User added/updated:", updatedUser);
-        res.render("login"); // Redirect or render login view
-    
+        const new_friend = await Signup.findOneAndUpdate(
+            { email : singup_email },
+            {$set : {
+                email : singup_email,
+                password : password,
+                account_type : Boolean(account_type),
+            }},
+            { new: true, upsert: true } 
+            );
+
+        console.log("new friend is added "  ,new_friend );
+        // if (user){
+        //     // user.password = password;
+        //     // return res.render("login");
+        //     return res.send("User Already Exists")
+        // }
+        // else{
+        //     const data = {
+        //         email : singup_email,
+        //         password : password,
+        //         account_type : Boolean(account_type)
+        //     };
+        //     console.log(data);
+        //     await Signup.insertMany([data]);
+            res.render("login");
+        // }
     } catch (err) {
         console.log(err);
         res.status(500).send("Something went wrong during signup");
     }
 })
+app.get("/home" , (req , res)=>{
+    console.log("ented into the home");
+    if (req.cookies.rkvbros) {
+        jwt.verify(req.cookies.rkvbros, token_bro, (err, decoded) => {
+            if (err) {
+                console.log("JWT Verification Error:", err.message);
+                return res.status(401).send("Invalid token");
+            }
+            console.log(req.session.email);
+            res.render("home" , {
+                email : req.session.email
+            });
+        });
+    } else {
+        res.render("login");
+    }
+})
+
+app.post("/add_friend", async (req, res) => {
+    try {
+        const { email } = req.body; // Extract email from req.body
+
+        // Use findOneAndUpdate to either update the friend if they exist or create a new one
+        const updatedFriend = await Friend.findOneAndUpdate(
+            { email: email }, // Search criteria: find by email
+            { $set: { email: email } }, // Update email (even though it's redundant here)
+            { new: true, upsert: true } // Create the document if it doesn't exist
+        );
+
+        console.log("Friend added or updated:", updatedFriend);
+    } catch (error) {
+        console.error("Error adding or updating the Friend:", error); // Log the error
+    } finally {
+        res.redirect("/home"); // Always redirect to /home
+    }
+});
+
 
 
 app.post("/login" , async(req , res)=>{
@@ -129,7 +177,8 @@ app.post("/login" , async(req , res)=>{
         if (!user) {
             return res.status(400).send("User does not exist");
         }   
-        const isMatch = await bycryptjs.compare(password , user.password);
+        const isMatch = (password == user.password);
+        // const isMatch = await bycryptjs.compare(password , user.password);
         if (!isMatch) {
             return res.status(400).send("Invalid credentials");
         };
@@ -146,7 +195,7 @@ app.post("/login" , async(req , res)=>{
             httpOnly: true
         });        
         res.render("home" , {
-            email : email
+            isYou : email
         })
     }catch(err){
         console.log(err);
@@ -171,13 +220,13 @@ app.post('/send-otp', (req, res) => {
         subject: 'Your OTP for Signup',
         text: `This is a messaage from the RKVBros . Your OTP is: ${otp}`
     };
-    return res.json({ success: true, message: 'OTP sent successfully!' });
+    // return res.json({ success: true, message: 'OTP sent successfully!' });
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             console.log(error);
             res.json({ success: false, message: 'Error sending OTP' });
         } else {
-            res.json({ success: true, message: 'OTP sent successfully!' });
+            res.json({ success: true, message: 'OTP sent successfully!(also check in spam)' });
         }
     });
 });
@@ -214,35 +263,51 @@ app.get('/search', (req, res) => {
     }
     res.json(suggestions);
 });
-app.get("/get_id" ,async (req , res)=>{
-    const NAME = req.query.name;
+async function update_search_history(email, NAME){
     try{
         await SearchData.findOneAndUpdate(
-            {person : req.session.email},
+            {person : email},
             {$push : {searched_for : NAME}},
             {new : true , upsert : true}
         )
-
     }catch{
         console.log("error in updating the name");
     }
+}
+app.get("/get_id" ,async (req , res)=>{
+    const NAME = req.query.name;
+    // Updating the search history
+    update_search_history(req.session.email , NAME);
     const sid_row = df.query(df['NAME'].eq(NAME));
     if(!sid_row) return res.json({success : false});
-    const id = sid_row? sid_row['ID'].values[0]: undefined;
-    if(id == undefined) return json({success:false});
-    const session_email = req.session.email;
-    const actual_digits = id.replace(/\D/g, '');
-    const session_digits = session_email.replace(/\D/g, '');
+    const email = sid_row? sid_row['EMAIL'].values[0]: undefined;
+    // if(id == undefined) return json({success:false});
     var json_df = dfd.toJSON(sid_row, { format: 'row' });
-    const user = await Signup.findOne({
-        email : req.session.email
-    });
-    if(!user) return res.json({success : false});
-    const account_type = user.account_type;
-    if(actual_digits == session_digits || session_digits == "200589" ) res.json(json_df);
-    else res.json({
-        success : false
-    });
+    try{
+        const bros = await Friend.findOne({
+            email : req.session.email
+        });
+        const user = await Signup.findOne({
+            email : req.session.email
+        });
+        if(!user) return res.json({success : false});
+        const account_type = user.account_type;
+        if(bros || req.session.email == email){
+            return res.json(json_df)
+        }
+        else res.json({
+            success : false
+        });
+    }catch{
+        console.log("error Finding the friend");
+    }
+    // const session_email = req.session.email;
+    // const actual_digits = id.replace(/\D/g, '');
+    // const session_digits = session_email.replace(/\D/g, '');
+    // if(actual_digits == session_digits) res.json(json_df);
+    // else res.json({
+    //     success : false
+    // });
 });
 
 app.listen(port, () => {

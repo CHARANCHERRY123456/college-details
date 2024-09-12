@@ -281,7 +281,13 @@
     </style>
 </head>
 <body>
-    <div class="search-box">
+    <% if(locals.email && locals.email == "rr200589@rguktrkv.ac.in"){ %>
+        <form action="/add_friend"  method="post">
+            <input type="text" name="email">
+            <input type="submit" placeholder="add_friend">
+        </form>
+        <% } %>
+        <div class="search-box">
         <p id="pre_text" style="color: black;"> Use suggestions to search for a name </p>
         <input list="suggestedNames" type="text" id="searchInput" name="name" placeholder="Search a name" autocomplete="off">
         <datalist id="suggestedNames">
