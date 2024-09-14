@@ -189,7 +189,7 @@ body.dark-mode .toggle-dark-mode {
                 e.preventDefault();
                 var email = $('#email').val();
                 $('#send_otp').attr('disabled', true);
-                const isValid = /^[rR]{2}2\d{5}@rguktrkv\.ac\.in$/.test(email);
+                const isValid = /@rguktrkv\.ac\.in$/.test(email);
                 if(!isValid) {
                     return alert("enter your colllege email");
                     $('#send_otp').attr('disabled', false);
