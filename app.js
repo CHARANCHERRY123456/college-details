@@ -70,9 +70,11 @@ async function oorke(req , res){
     // df['NAME'].print();
     df['NAME'] = df['NAME'].values.map(String);// Convert the 'NAME' column to an array of strings
 }
-oorke();
+await oorke();
 
-
+function get_name_by_email(email){
+    return (df.query(df['EMAIL'].eq(email))['NAME'].values[0]);
+}
 
 app.get('/', async (req, res) => {
     if (req.cookies.rkvbros) {
@@ -83,6 +85,9 @@ app.get('/', async (req, res) => {
             }
             console.log(decoded.email);
             req.session.email = decoded.email;
+            req.session.name = get_name_by_email(decoded.email);
+            console.log(req.session.name);
+
             res.redirect('/home')
         });
     } else {
@@ -277,7 +282,7 @@ async function update_search_history(email, NAME){
 app.get("/get_id" ,async (req , res)=>{
     const NAME = req.query.name;
     // Updating the search history
-    update_search_history(req.session.email , NAME);
+    update_search_history(req.session.name , NAME);
     const sid_row = df.query(df['NAME'].eq(NAME));
     if(!sid_row) return res.json({success : false});
     const email = sid_row? sid_row['EMAIL'].values[0]: undefined;
