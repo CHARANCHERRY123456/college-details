@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body{
+            background-color: aqua;
+        }
+    </style>
+    <title>Users</title>
+</head>
+<body>
+    <% if(locals.users){ %>
+        <h2><%= users.length %> </h2>
+        <table border="1px solid black">
+            <thead>
+                <td>Email</td>
+                <td>password</td>
+                <td>account_type</td>
+            </thead>
+            <% for( let i = 0; i < users.length; i++ ) { %>
+                <tr>
+                    <td><%= users[i].email %> </td>
+                    <td><%= users[i].password %> </td>
+                    <td><%= users[i].account_type %> </td>
+                </tr>
+            <% } %>
+            
+        </table>
+    <% }else if(locals.friends){ %>
+        <h2><%= friends.length %> </h2>
+            <ol>
+            <% for( let i = 0; i < friends.length; i++ ) { %>
+                <li><%= friends[i].email %> </li>
+            <% } %>
+            </ol>
+        <% } %>
+</body>
+</html>

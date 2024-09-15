@@ -1,5 +1,5 @@
 import * as dfd from 'danfojs-node';
-import express, { json } from 'express'
+import express from 'express'
 import bodyParser  from "body-parser";
 import path from 'path';
 import { fileURLToPath } from "url";
@@ -8,46 +8,46 @@ import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
-import bycryptjs from 'bcryptjs'
 import dotenv from 'dotenv';
-import public_list from './public_list.js';
-import home from './home.js';
+import './db_connect.js'
+import Signup from './models/Signup.js';
+import charan from './routes/charan.js';
+import Friend from './models/Friend.js';
 dotenv.config();
 const app = express();
 const port = 3000;
 const __filename = fileURLToPath(import.meta.url);
-mongoose.connect(process.env.ATLAS_URI)
-  .then(() => {
-    console.log('Connected to MongoDB successfully!');
-  })
-  .catch((err) => {
-    console.error('Error connecting to MongoDB:', err);
-  });
-const SignupSchema = new mongoose.Schema({
-    email : String,
-    password : String,
-    account_type : Boolean,
-    token : String
-});
-const Signup = new mongoose.model("Signup" , SignupSchema);
+// mongoose.connect(process.env.ATLAS_URI)
+//   .then(() => {
+//     console.log('Connected to MongoDB successfully!');
+//   })
+//   .catch((err) => {
+//     console.error('Error connecting to MongoDB:', err);
+//   });
+// const SignupSchema = new mongoose.Schema({
+//     email : String,
+//     password : String,
+//     account_type : Boolean,
+//     token : String
+// });
+// const Signup = new mongoose.model("Signup" , SignupSchema);
+// const FriendsSchame = new mongoose.Schema({
+//     email : {
+//        type:  String,
+//     }
+// })
+// const Friend = new mongoose.model("Friend" , FriendsSchame);
 const SearchDataSchema = new mongoose.Schema({
     person : String,
     searched_for : [String]
 });
 const SearchData = new mongoose.model("SearchData" , SearchDataSchema );
-
-const FriendsSchame = new mongoose.Schema({
-    email : {
-       type:  String,
-    }
-})
-const Friend = new mongoose.model("Friend" , FriendsSchame);
 const __dirname = path.dirname(__filename);
-const token_bro = "this_is_a_secret"; 
-app.use("/home" , home)
+const token_bro = process.env.TOKEN_BRO; 
 app.use(bodyParser.urlencoded({extended:true}));
 app.set('view engine' , 'ejs' );
 app.use(cookieParser());
+app.use("/charan"  , charan)
 app.set("views" , path.join(__dirname , "/templates"));
 app.use(express.static(path.join(__dirname , "/public")));
 app.use(session({
@@ -72,7 +72,7 @@ async function oorke(req , res){
 }
 await oorke();
 
-function get_name_by_email(email){
+export function get_name_by_email(email){
     return (df.query(df['EMAIL'].eq(email))['NAME'].values[0]);
 }
 
@@ -103,7 +103,7 @@ app.post("/take_details" ,async (req , res)=>{
     const {password , cpassword,account_type} = req.body; 
     if(password != cpassword) return res.render("signup");
     // const singup_id = singup_email.replace(/\D/g, '');
-    const hashedPassword = await bycryptjs.hash(password, 10);
+    // const hashedPassword = await bycryptjs.hash(password, 10);
     try {
         const new_friend = await Signup.findOneAndUpdate(
             { email : singup_email },
@@ -115,7 +115,7 @@ app.post("/take_details" ,async (req , res)=>{
             { new: true, upsert: true } 
             );
 
-        console.log("new friend is added "  ,new_friend );
+        console.log("new User is added "  ,new_friend );
         // if (user){
         //     // user.password = password;
         //     // return res.render("login");
@@ -135,7 +135,7 @@ app.post("/take_details" ,async (req , res)=>{
         console.log(err);
         res.status(500).send("Something went wrong during signup");
     }
-})
+});
 app.get("/home" , (req , res)=>{
     console.log("ented into the home");
     if (req.cookies.rkvbros) {
