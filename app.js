@@ -5,77 +5,48 @@ import path from 'path';
 import { fileURLToPath } from "url";
 import session from 'express-session';
 import jwt from 'jsonwebtoken';
-import nodemailer from 'nodemailer';
-import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import './db_connect.js'
 import Signup from './models/Signup.js';
 import charan from './routes/charan.js';
+// import requests from './requests.js';
 import Friend from './models/Friend.js';
+import SearchData from './models/SearchData.js';
 dotenv.config();
 const app = express();
 const port = 3000;
 const __filename = fileURLToPath(import.meta.url);
-// mongoose.connect(process.env.ATLAS_URI)
-//   .then(() => {
-//     console.log('Connected to MongoDB successfully!');
-//   })
-//   .catch((err) => {
-//     console.error('Error connecting to MongoDB:', err);
-//   });
-// const SignupSchema = new mongoose.Schema({
-//     email : String,
-//     password : String,
-//     account_type : Boolean,
-//     token : String
-// });
-// const Signup = new mongoose.model("Signup" , SignupSchema);
-// const FriendsSchame = new mongoose.Schema({
-//     email : {
-//        type:  String,
-//     }
-// })
-// const Friend = new mongoose.model("Friend" , FriendsSchame);
-const SearchDataSchema = new mongoose.Schema({
-    person : String,
-    searched_for : [String]
-});
-const SearchData = new mongoose.model("SearchData" , SearchDataSchema );
 const __dirname = path.dirname(__filename);
 const token_bro = process.env.TOKEN_BRO; 
 app.use(bodyParser.urlencoded({extended:true}));
 app.set('view engine' , 'ejs' );
 app.use(cookieParser());
-app.use("/charan"  , charan)
-app.set("views" , path.join(__dirname , "/templates"));
+app.use("/charan"  , charan);
+// app.use("/requests" , requests);
 app.use(express.static(path.join(__dirname , "/public")));
 app.use(session({
     secret: 'secret-key',
     resave: false,
     saveUninitialized: false
 }));
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.EMAIL_PASS
-    }
-});
-
 
 let df = {};
-async function oorke(req , res){
+async function oorke(query){
     df = await dfd.readCSV("the_data_with_rank.csv");
-    // df['NAME'].print();
     df['NAME'] = df['NAME'].values.map(String);// Convert the 'NAME' column to an array of strings
 }
-await oorke();
 
+await oorke();
 export function get_name_by_email(email){
     return (df.query(df['EMAIL'].eq(email))['NAME'].values[0]);
 }
 
+export function get_email_by_name(name){
+    return (df.query(df['NAME'].eq(name))['EMAIL'].values[0]);
+}
+
+console.log(get_email_by_name("C V CHARAN"));
 app.get('/', async (req, res) => {
     if (req.cookies.rkvbros) {
         jwt.verify(req.cookies.rkvbros, token_bro, (err, decoded) => {
@@ -152,7 +123,7 @@ app.get("/home" , (req , res)=>{
     } else {
         res.render("login");
     }
-})
+});
 
 app.post("/add_friend", async (req, res) => {
     try {
@@ -177,6 +148,7 @@ app.post("/add_friend", async (req, res) => {
 
 app.post("/login" , async(req , res)=>{
     var {email , password }  = req.body;
+    console.log(email , password);
     try{
         const user = await Signup.findOne({ email : email});
         if (!user) {
@@ -207,6 +179,8 @@ app.post("/login" , async(req , res)=>{
         res.status(500).send("Something went wrong in login");
     }
 });
+
+
 
 var singup_email = undefined;
 app.post('/send-otp', (req, res) => {
@@ -250,22 +224,10 @@ app.get('/signup' , (req , res)=>{
 });
 
 
-
-
-
-
-
-
-
-
-
-
 app.get('/search', (req, res) => {
-    const query = req.query.name.toUpperCase();
-    const filteredNames = df.values.filter(row => row[1].includes(query)).map(row => row[1]);
-    const suggestions = {
-        "names" : filteredNames
-    }
+    const query = req.query.name.toLocaleUpperCase();
+    const filteredNames = df.values.filter(row => row[1].includes(query) || row[0].includes(query) ).map(row => [row[1],row[0] ,row[25]]);
+    const suggestions = {"names" : filteredNames}
     res.json(suggestions);
 });
 async function update_search_history(email, NAME){
@@ -280,14 +242,13 @@ async function update_search_history(email, NAME){
     }
 }
 app.get("/get_id" ,async (req , res)=>{
-    const NAME = req.query.name;
-    // Updating the search history
+    var NAME = req.query.name.split(',')[0];
     update_search_history(req.session.name , NAME);
-    const sid_row = df.query(df['NAME'].eq(NAME));
-    if(!sid_row) return res.json({success : false});
-    const email = sid_row? sid_row['EMAIL'].values[0]: undefined;
+    const searched_row = df.query(df['NAME'].eq(NAME));
+    if(!searched_row) return res.json({success : false});
+    const email = searched_row? searched_row['EMAIL'].values[0]: undefined;
     // if(id == undefined) return json({success:false});
-    var json_df = dfd.toJSON(sid_row, { format: 'row' });
+    var json_df = dfd.toJSON(searched_row, { format: 'row' });
     try{
         const bros = await Friend.findOne({
             email : req.session.email
@@ -295,24 +256,23 @@ app.get("/get_id" ,async (req , res)=>{
         const user = await Signup.findOne({
             email : req.session.email
         });
+        const is_public_user =user? user.account_type:false;
+        const searched_person = await Signup.findOne({
+            email : email
+        });
+        const is_searched_person_public =searched_person? searched_person.account_type:false;
+
         if(!user) return res.json({success : false});
-        const account_type = user.account_type;
-        if(bros || req.session.email == email){
+        if(req.session.email == email || bros || (is_public_user && is_searched_person_public)){
             return res.json(json_df)
         }
         else res.json({
-            success : false
+            success : false,
         });
-    }catch{
+    }catch(err){
+        console.log(err.message);
         console.log("error Finding the friend");
     }
-    // const session_email = req.session.email;
-    // const actual_digits = id.replace(/\D/g, '');
-    // const session_digits = session_email.replace(/\D/g, '');
-    // if(actual_digits == session_digits) res.json(json_df);
-    // else res.json({
-    //     success : false
-    // });
 });
 
 app.listen(port, () => {

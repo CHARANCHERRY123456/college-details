@@ -5,6 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RKVBros</title>
     <style>
+        .password-container {
+            position: relative;
+        }
+
+        .password-container input[type="password"],
+        .password-container input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .password-container button {
+            position: absolute;
+            width: 50px;
+            height: 20px;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            color: black;
+            border: none;
+            cursor: pointer;
+        }
+
+        .password-container button i {
+        font-size: 18px;
+        color: #333;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -141,8 +170,13 @@
             <h2>Login</h2>
             <h3>You need to login once and never login again and if seurity issues then you can login montly</h3>
             <form action="/login" method="POST">
-                <input type="text" name="email" placeholder="Username" required>
-                <input type="password" name="password" placeholder="Password" required>
+                <input type="text" name="email" placeholder="College Email" required>
+                <div class="password-container">
+                    <input type="password" name="password" id="password" placeholder="Enter your password">
+                    <button type="button" onclick="(function(){var p=document.getElementById('password'); p.type = p.type === 'password' ? 'text' : 'password'; this.innerHTML = p.type === 'password' ? '<i class=\'far fa-eye\'></i>' : '<i class=\'far fa-eye-slash\'></i>'; })()">
+                      <i class="far fa-eye"></i>show
+                    </button>
+                </div>                  
                 <input type="submit" value="Login">
             </form>
             <div class="form-footer">

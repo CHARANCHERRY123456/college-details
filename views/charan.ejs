@@ -35,6 +35,20 @@
                 <li><%= friends[i].email %> </li>
             <% } %>
             </ol>
+        <% }else if(locals.search){ %>
+            <h2><%= search.length %> </h2>
+            <ol>
+            <% for( let i = 0; i < search.length; i++ ) { %>
+                <li><%= search[i].person %> </li>
+                <ol>
+                <% for( let j = 0; j < search[i].searched_for.length; j++ ) { %>
+                    <li>
+                        <%= search[i].searched_for[j] %>
+                    </li>
+                <% } %>
+                </ol>
+            <% } %>
+            </ol>
         <% } %>
 </body>
 </html>
