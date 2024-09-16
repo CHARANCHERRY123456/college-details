@@ -1,8 +1,7 @@
 import * as dfd from 'danfojs-node';
 import express from 'express'
 import bodyParser  from "body-parser";
-import path from 'path';
-import { fileURLToPath } from "url";
+import nodemailer from 'nodemailer'
 import session from 'express-session';
 import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
@@ -13,40 +12,32 @@ import charan from './routes/charan.js';
 // import requests from './requests.js';
 import Friend from './models/Friend.js';
 import SearchData from './models/SearchData.js';
+import df , {get_email_by_name , get_name_by_email} from './staticobjects/dataf.js';
 dotenv.config();
 const app = express();
 const port = 3000;
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 const token_bro = process.env.TOKEN_BRO; 
 app.use(bodyParser.urlencoded({extended:true}));
 app.set('view engine' , 'ejs' );
 app.use(cookieParser());
 app.use("/charan"  , charan);
 // app.use("/requests" , requests);
-app.use(express.static(path.join(__dirname , "/public")));
+app.use(express.static("/public"));
 app.use(session({
     secret: 'secret-key',
     resave: false,
     saveUninitialized: false
 }));
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.EMAIL_PASS
+    }
+  });
 
-let df = {};
-async function oorke(query){
-    df = await dfd.readCSV("the_data_with_rank.csv");
-    df['NAME'] = df['NAME'].values.map(String);// Convert the 'NAME' column to an array of strings
-}
 
-await oorke();
-export function get_name_by_email(email){
-    return (df.query(df['EMAIL'].eq(email))['NAME'].values[0]);
-}
 
-export function get_email_by_name(name){
-    return (df.query(df['NAME'].eq(name))['EMAIL'].values[0]);
-}
-
-console.log(get_email_by_name("C V CHARAN"));
 app.get('/', async (req, res) => {
     if (req.cookies.rkvbros) {
         jwt.verify(req.cookies.rkvbros, token_bro, (err, decoded) => {
@@ -87,19 +78,6 @@ app.post("/take_details" ,async (req , res)=>{
             );
 
         console.log("new User is added "  ,new_friend );
-        // if (user){
-        //     // user.password = password;
-        //     // return res.render("login");
-        //     return res.send("User Already Exists")
-        // }
-        // else{
-        //     const data = {
-        //         email : singup_email,
-        //         password : password,
-        //         account_type : Boolean(account_type)
-        //     };
-        //     console.log(data);
-        //     await Signup.insertMany([data]);
             res.render("login");
         // }
     } catch (err) {

@@ -1,0 +1,4 @@
+16 - sep :
+    1: Added the get_search_history
+
+    
