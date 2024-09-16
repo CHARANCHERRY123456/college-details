@@ -12,7 +12,7 @@ import charan from './routes/charan.js';
 // import requests from './requests.js';
 import Friend from './models/Friend.js';
 import SearchData from './models/SearchData.js';
-import df , {get_email_by_name , get_name_by_email} from './staticobjects/dataf.js';
+// import df , {get_email_by_name , get_name_by_email} from './staticobjects/dataf.js';
 dotenv.config();
 const app = express();
 const port = 3000;
@@ -35,7 +35,21 @@ const transporter = nodemailer.createTransport({
       pass: process.env.EMAIL_PASS
     }
   });
-
+  let df = {};
+  async function oorke(query){
+      df = await dfd.readCSV("the_data_with_rank.csv");
+      df['NAME'] = df['NAME'].values.map(String);// Convert the 'NAME' column to an array of strings
+  }
+  await oorke();
+//   console.log(df);
+  export function get_name_by_email(email){
+      return (df.query(df['EMAIL'].eq(email))['NAME'].values[0]);
+  }
+  
+  export function get_email_by_name(name){
+      return (df.query(df['NAME'].eq(name))['EMAIL'].values[0]);
+  }
+  
 
 
 app.get('/', async (req, res) => {
