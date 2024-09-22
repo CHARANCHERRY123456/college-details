@@ -288,19 +288,20 @@
     </style>
 </head>
 <body>
-        <% if(locals.email && locals.email == "rr200589@rguktrkv.ac.in"){ %>
-            <div class="nav">
-                <a href="charan/get_users">Get User</a>
-                <a href="charan/get_search_data">Get Search Data</a>
-                <a href="charan/get_friends">Get Friends</a>
-                <form action="/add_friend"  method="post">
-                    <input type="text" name="email">
-                    <input type="submit" placeholder="add_friend">
-                </form>
-            </div>
-        <% } %> 
-        <!-- For all  -->
-        <div class="search-box">
+    <!-- <%- include('navbar.ejs')  %> -->
+    <% if(locals.email && locals.email == "rr200589@rguktrkv.ac.in"){ %>
+        <div class="nav">
+            <a href="charan/get_users">Get User</a>
+            <a href="charan/get_search_data">Get Search Data</a>
+            <a href="charan/get_friends">Get Friends</a>
+            <form action="/add_friend"  method="post">
+                <input type="text" name="email">
+                <input type="submit" placeholder="add_friend">
+            </form>
+        </div>
+    <% } %> 
+    <!-- For all  -->
+    <div class="search-box">
         <p id="pre_text" style="color: black;"> Use suggestions to search for a name </p>
         <input list="suggestedNames" type="text" id="searchInput" name="name" placeholder="Search a name" autocomplete="off">
         <datalist id="suggestedNames">

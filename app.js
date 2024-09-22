@@ -12,6 +12,7 @@ import charan from './routes/charan.js';
 // import requests from './requests.js';
 import Friend from './models/Friend.js';
 import SearchData from './models/SearchData.js';
+import { verifyToken } from './middlewares/authMiddleware.js';
 // import df , {get_email_by_name , get_name_by_email} from './staticobjects/dataf.js';
 dotenv.config();
 const app = express();
@@ -99,22 +100,33 @@ app.post("/take_details" ,async (req , res)=>{
         res.status(500).send("Something went wrong during signup");
     }
 });
-app.get("/home" , (req , res)=>{
+app.get("/home" ,verifyToken , (req , res)=>{
     console.log("ented into the home");
-    if (req.cookies.rkvbros) {
-        jwt.verify(req.cookies.rkvbros, token_bro, (err, decoded) => {
-            if (err) {
-                console.log("JWT Verification Error:", err.message);
-                return res.status(401).send("Invalid token");
-            }
-            console.log(req.session.email);
-            res.render("home" , {
-                email : req.session.email
-            });
+    try{
+        const {email} = req.user
+        res.render("home" , {
+            email : email,
+            isYou : email
         });
-    } else {
-        res.render("login");
+    }catch(err){
+        console.log(err.message);
+        res.send("dorry not getting home");
     }
+    // if (req.cookies.rkvbros) {
+    //     jwt.verify(req.cookies.rkvbros, token_bro, (err, decoded) => {
+    //         if (err) {
+    //             console.log("JWT Verification Error:", err.message);
+    //             return res.status(401).send("Invalid token");
+    //         }
+    //         console.log(req.session.email);
+    //         res.render("home" , {
+    //             email : req.session.email,
+    //             isYou : req.session.eamil
+    //         });
+    //     });
+    // } else {
+    //     res.render("login");
+    // }
 });
 
 app.post("/add_friend", async (req, res) => {
