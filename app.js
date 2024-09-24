@@ -263,6 +263,7 @@ app.get("/get_id" ,async (req , res)=>{
         const user = await Signup.findOne({
             email : req.session.email
         });
+        if(bros) console.log("yes you can access everyon");
         const is_public_user =user? user.account_type:false;
         const searched_person = await Signup.findOne({
             email : email
