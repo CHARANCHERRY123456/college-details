@@ -21,6 +21,7 @@ const token_bro = process.env.TOKEN_BRO;
 app.use(bodyParser.urlencoded({extended:true}));
 app.set('view engine' , 'ejs' );
 app.use(cookieParser());
+app.use(express.static('public'));
 app.use("/charan"  , charan);
 // app.use("/requests" , requests);
 app.use(express.static("/public"));
@@ -51,7 +52,9 @@ const transporter = nodemailer.createTransport({
       return (df.query(df['NAME'].eq(name))['EMAIL'].values[0]);
   }
   
-
+app.get("/test" , (req , res)=>{
+    res.render("navbar")
+})
 
 app.get('/', async (req, res) => {
     if (req.cookies.rkvbros) {
