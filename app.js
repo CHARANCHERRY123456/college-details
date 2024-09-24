@@ -16,7 +16,7 @@ import { verifyToken } from './middlewares/authMiddleware.js';
 // import df , {get_email_by_name , get_name_by_email} from './staticobjects/dataf.js';
 dotenv.config();
 const app = express();
-const port = 3000;
+const port = 3001;
 const token_bro = process.env.TOKEN_BRO; 
 app.use(bodyParser.urlencoded({extended:true}));
 app.set('view engine' , 'ejs' );
