@@ -39,7 +39,7 @@ const transporter = nodemailer.createTransport({
   });
   let df = {};
   async function oorke(query){
-      df = await dfd.readCSV("the_data_with_rank.csv");
+      df = await dfd.readCSV("r20_section_rank.csv");
       df['NAME'] = df['NAME'].values.map(String);// Convert the 'NAME' column to an array of strings
   }
   await oorke();
