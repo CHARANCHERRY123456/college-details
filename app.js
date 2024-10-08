@@ -240,12 +240,12 @@ app.get('/search', (req, res) => {
     if(batch == "r20"){
         console.log("in the e20");
         const filteredNamesr20 = r20.values.filter(row => row[1].includes(query) || row[0].includes(query) ).map(row => [row[1],row[0] ,row[25]]);
-
         return res.json({"names" :filteredNamesr20});
     }
     else if(batch=="r21"){
         console.log("in r21");
-        const filteredNamesr21 = r21.values.filter(row => row[1].includes(query) || row[0].includes(query) ).map(row => [row[0],row[1] ,row[8]]);
+        const filteredNamesr21 = r21.values.filter(row => row[1].toLocaleUpperCase().includes(query) || row[0].toLocaleUpperCase().includes(query) ).map(row => [row[0],row[1] ,row[8]]);
+        console.log("for the name " ,query ,  filteredNamesr21);
         return res.json({"names" :filteredNamesr21});
     }
     var filteredNames = batch === "r20" ? filteredNamesr20 : filteredNamesr21;
