@@ -1,4 +1,4 @@
-ID No,Name of the Student,Branch,Subject,Section,SP,ExamHall,Date & Time,Mail_ID
+ID,Name,Branch,Subject,Section,SP,ExamHall,Date & Time,Mail_ID
 R210706,KONIREDDY  AJAY KUMAR REDDY,E2S1_CE,Concrete Technology,A,A1,AB-1_G004,12-Aug-2024(02:00PM-03:00PM),R210706@rguktrkv.ac.in
 R210131,PACHHA VENGAIAH CHOWDARI,E2S1_CE,Concrete Technology,A,A3,AB-1_G004,12-Aug-2024(02:00PM-03:00PM),R210131@rguktrkv.ac.in
 R210012,YEDDULA HEMANTH,E2S1_CE,Concrete Technology,A,A5,AB-1_G004,12-Aug-2024(02:00PM-03:00PM),R210012@rguktrkv.ac.in

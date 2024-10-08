@@ -37,19 +37,21 @@ const transporter = nodemailer.createTransport({
       pass: process.env.EMAIL_PASS
     }
   });
-  let df = {};
+  let r20 = {};
+  let r21 = {};
   async function oorke(query){
-      df = await dfd.readCSV("r20_section_rank.csv");
-      df['NAME'] = df['NAME'].values.map(String);// Convert the 'NAME' column to an array of strings
+      r20 = await dfd.readCSV("r20_section_rank.csv");
+      r21 = await dfd.readCSV("r21.csv");
   }
   await oorke();
+
 //   console.log(df);
   export function get_name_by_email(email){
-      return (df.query(df['EMAIL'].eq(email))['NAME'].values[0]);
+      return (r20.query(r20['EMAIL'].eq(email))['NAME'].values[0]);
   }
   
   export function get_email_by_name(name){
-      return (df.query(df['NAME'].eq(name))['EMAIL'].values[0]);
+      return (r20.query(r20['NAME'].eq(name))['EMAIL'].values[0]);
   }
   
 app.get("/test" , (req , res)=>{
@@ -232,10 +234,21 @@ app.get('/signup' , (req , res)=>{
 
 
 app.get('/search', (req, res) => {
+    console.log("query =" ,req.query);
+    const {batch} = req.query
     const query = req.query.name.toLocaleUpperCase();
-    const filteredNames = df.values.filter(row => row[1].includes(query) || row[0].includes(query) ).map(row => [row[1],row[0] ,row[25]]);
-    const suggestions = {"names" : filteredNames}
-    res.json(suggestions);
+    if(batch == "r20"){
+        console.log("in the e20");
+        const filteredNamesr20 = r20.values.filter(row => row[1].includes(query) || row[0].includes(query) ).map(row => [row[1],row[0] ,row[25]]);
+
+        return res.json({"names" :filteredNamesr20});
+    }
+    else if(batch=="r21"){
+        console.log("in r21");
+        const filteredNamesr21 = r21.values.filter(row => row[1].includes(query) || row[0].includes(query) ).map(row => [row[0],row[1] ,row[8]]);
+        return res.json({"names" :filteredNamesr21});
+    }
+    var filteredNames = batch === "r20" ? filteredNamesr20 : filteredNamesr21;
 });
 async function update_search_history(email, NAME){
     try{
@@ -249,10 +262,12 @@ async function update_search_history(email, NAME){
     }
 }
 app.get("/get_id" ,async (req , res)=>{
+    const {batch} = req.query;
     var NAME = req.query.name.split(',')[0];
     update_search_history(req.session.name , NAME);
-    const searched_row = df.query(df['NAME'].eq(NAME));
+    const searched_row =batch=="r20"? r20.query(r20['NAME'].eq(NAME)):r21.query(r21['NAME'].eq(NAME))
     if(!searched_row) return res.json({success : false});
+    console.log("searchd rows" , searched_row);
     const email = searched_row? searched_row['EMAIL'].values[0]: undefined;
     // if(id == undefined) return json({success:false});
     var json_df = dfd.toJSON(searched_row, { format: 'row' });
@@ -272,6 +287,7 @@ app.get("/get_id" ,async (req , res)=>{
 
         if(!user) return res.json({success : false});
         if(req.session.email == email || bros || (is_public_user && is_searched_person_public)){
+            console.log("sednting the json" , json_df);
             return res.json(json_df)
         }
         else res.json({
