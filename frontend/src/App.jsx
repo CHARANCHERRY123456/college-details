@@ -1,8 +1,10 @@
 import './App.css'
-import Home from './components/home'
+import AppRouter from './components/appSetup/appRouters'
 
 function App() {
-  return <Home />
+  return <div className="app">
+    <AppRouter />
+  </div>
 }
 
 export default App
