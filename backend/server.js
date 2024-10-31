@@ -3,11 +3,13 @@ const path = require('path'); // Import path module
 const app = express();
 const cors = require('cors');
 require("./db.js");
+const search = require("./routes/analytics/search.js")
 const bodyParser = require('body-parser');
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use("/analytics" ,search);
 
 // Serve static files from the "dist" directory
 app.use(express.static(path.join(__dirname, '..', 'frontend', 'dist')));
@@ -24,23 +26,24 @@ app.post('/post', (req, res) => {
   // Check credentials, respond with success or failure
   res.json({ success: true, output: input + " is the name  " });
 });
-app.get('/suggestions', (req, res) => {
-  const searchQuery = req.query.q || "";
-  const allSuggestions = ["Alice", "Bob", "Charlie", "Dave", "Eve", "Frank", "Grace"];
+// app.get('/suggestions', (req, res) => {
+//   const searchQuery = req.query.q || "";
+//   const allSuggestions = ["Alice", "Bob", "Charlie", "Dave", "Eve", "Frank", "Grace"];
   
-  // Filter suggestions based on the search query
-  const filteredSuggestions = allSuggestions.filter(name =>
-      name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-  res.json(filteredSuggestions);
-});
+//   // Filter suggestions based on the search query
+//   const filteredSuggestions = allSuggestions.filter(name =>
+//       name.toLowerCase().includes(searchQuery.toLowerCase())
+//   );
+//   res.json(filteredSuggestions);
+// });
 
 
 
 
 // Serve the index.html file for any other requests
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname,'..', 'frontend', 'dist', 'index.html'));
+  console.log("path is not given properly");
+  res.json({success : false})
 });
 
 // Start server

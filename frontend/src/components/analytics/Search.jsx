@@ -8,16 +8,18 @@ function SearchWithDatalist() {
     useEffect(() => {
         if (searchInput) {
             axios
-                .get(`http://localhost:3000/suggestions?q=${searchInput}`)
+                .get(`http://localhost:3000/analytics/names?q=${searchInput}`)
                 .then((res) => {
-                    console.log(res);
-                    setSuggestions(res.data);
+                    // Extract the NAME values into an array
+                    const nameSuggestions = res.data.map((item) => item.NAME);
+                    setSuggestions(nameSuggestions);
                 })
                 .catch((err) => console.error("Error fetching suggestions:", err));
         } else {
-            setSuggestions([]); // Clear suggestions if input is empty
+            setSuggestions([]); 
         }
     }, [searchInput]);
+    
 
     return (
         <div className="search">
