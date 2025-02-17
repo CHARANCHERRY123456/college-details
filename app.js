@@ -81,6 +81,8 @@ app.get('/take_details', (req, res) => {
     res.render("take_details");
 });
 
+app.get("/r21_girls")
+
 app.post("/take_details" ,async (req , res)=>{
     const {password , cpassword,account_type} = req.body; 
     if(password != cpassword) return res.render("signup");
